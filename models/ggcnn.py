@@ -20,10 +20,10 @@ class GGCNN(nn.Module):
         self.convt2 = nn.ConvTranspose2d(filter_sizes[3], filter_sizes[4], kernel_sizes[4], stride=strides[4], padding=2, output_padding=1)
         self.convt3 = nn.ConvTranspose2d(filter_sizes[4], filter_sizes[5], kernel_sizes[5], stride=strides[5], padding=3, output_padding=1)
 
-        self.pos_output = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
-        self.cos_output = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
-        self.sin_output = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
-        self.width_output = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
+        self.pos_output     = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
+        self.cos_output     = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
+        self.sin_output     = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
+        self.width_output   = nn.Conv2d(filter_sizes[5], 1, kernel_size=2)
 
         for m in self.modules():
             if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)):
