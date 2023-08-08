@@ -30,8 +30,8 @@ def parse_args():
     parser.add_argument('--network',        type=str, default='ggcnn', help='Network Name in .models')
 
     # Dataset & Data & Training
-    parser.add_argument('--dataset',        type=str, default='cornell', help='Dataset Name ("cornell" or "jaquard")')
-    parser.add_argument('--dataset-path',   type=str, default='./data/cornell', help='Path to dataset')
+    parser.add_argument('--dataset',        type=str, default='jacquard', help='Dataset Name ("cornell" or "jacquard")')
+    parser.add_argument('--dataset-path',   type=str, default='./data/jacquard', help='Path to dataset')
     parser.add_argument('--use-depth',      type=int, default=1, help='Use Depth image for training (1/0)')
     parser.add_argument('--use-rgb',        type=int, default=0, help='Use RGB image for training (0/1)')
     parser.add_argument('--split',          type=float, default=0.9, help='Fraction of data for training (remainder is validation)')
@@ -185,7 +185,7 @@ def run():
     if args.vis:
         cv2.namedWindow('Display', cv2.WINDOW_NORMAL)
 
-    # Set-up output directories
+    # Setup output directories
     dt = datetime.datetime.now().strftime('%y%m%d_%H%M')
     net_desc = '{}_{}'.format(dt, '_'.join(args.description.split()))
 
@@ -199,17 +199,16 @@ def run():
     Dataset = get_dataset(args.dataset)
 
     train_dataset = Dataset(args.dataset_path, start=0.0, end=args.split, ds_rotate=args.ds_rotate,
-                            random_rotate=True, random_zoom=True,
-                            include_depth=args.use_depth, include_rgb=args.use_rgb)
-    train_data = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=args.batch_size,
-        shuffle=True,
-        num_workers=args.num_workers
-    )
+                            random_rotate=True, random_zoom=True, include_depth=args.use_depth, include_rgb=args.use_rgb)
+    
+    train_data = torch.utils.data.DataLoader(train_dataset,
+                                            batch_size=args.batch_size,
+                                            shuffle=True,
+                                            num_workers=args.num_workers)
+    
     val_dataset = Dataset(args.dataset_path, start=args.split, end=1.0, ds_rotate=args.ds_rotate,
-                          random_rotate=True, random_zoom=True,
-                          include_depth=args.use_depth, include_rgb=args.use_rgb)
+                          random_rotate=True, random_zoom=True, include_depth=args.use_depth, include_rgb=args.use_rgb)
+    
     val_data = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=1,
@@ -221,9 +220,9 @@ def run():
     # Load the network
     logging.info('Loading Network...')
     input_channels = 1*args.use_depth + 3*args.use_rgb
-    ggcnn = get_network(args.network)
+    network_using = get_network(args.network)
 
-    net = ggcnn(input_channels=input_channels)
+    net = network_using(input_channels=input_channels)
     device = torch.device("cuda:0")
     net = net.to(device)
     optimizer = optim.Adam(net.parameters())

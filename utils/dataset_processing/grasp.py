@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from skimage.draw import polygon
 from skimage.feature import peak_local_max
 
-
 def _gr_text_to_no(l, offset=(0, 0)):
     """
     Transform a single point from a Cornell file line to a pair of ints.
